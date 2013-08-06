@@ -1,0 +1,6 @@
+Summary,Number,Free Text,URL,Text
+All of them,34,"line 1
+line 2
+line 3",http://pawelniewiadomski.com,"this is a text"
+Only number,123,,,
+Text,,,,"text"

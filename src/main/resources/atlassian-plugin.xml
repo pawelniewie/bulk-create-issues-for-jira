@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+	<plugin-info>
+		<description>${project.description}</description>
+		<version>${project.version}</version>
+		<vendor name="${project.organization.name}" url="${project.organization.url}"/>
+		<param name="atlassian-licensing-enabled">true</param>
+
+        <param name="plugin-icon">marketing/Icon-16.png</param>
+        <param name="plugin-logo">marketing/Icon-72.png</param>
+        <param name="plugin-banner">marketing/banner.png</param>
+
+        <param name="configure.url">/plugins/servlet/com.pawelniewiadomski.devs.jira.jira-bulk-create-plugin/license</param>
+	</plugin-info>
+	<resource type="i18n" name="i18n" location="com.pawelniewiadomski.devs.jira.messages"/>
+	<rest name="REST Endpoint" key="rest-plugin" path="/bulk-create-issues-plugin" version="1.0"/>
+	<component key="fieldsHelper" class="com.pawelniewiadomski.devs.jira.components.FieldsHelper"/>
+	<component key="valuesHelper" class="com.pawelniewiadomski.devs.jira.components.ValuesHelper"/>
+	<web-resource key="global">
+		<transformation extension="js">
+			<transformer key="jsI18n"/>
+		</transformation>
+		<dependency>jira.webresources:jira-global</dependency>
+		<resource type="download" name="global.css" location="css/global.css"/>
+		<resource type="download" name="underscore.js" location="javascript/underscore.js"/>
+		<resource type="download" name="backbone.js" location="javascript/backbone.js"/>
+	</web-resource>
+	<web-resource key="browse-project-hacks">
+		<context>jira.browse.project</context>
+		<transformation extension="js">
+			<transformer key="jsI18n"/>
+		</transformation>
+		<dependency>jira.webresources:jira-global</dependency>
+		<dependency>com.pawelniewiadomski.devs.jira.jira-bulk-create-plugin:global</dependency>
+		<resource type="download" name="browse-project-hacks.js" location="javascript/browse-project-hacks.js"/>
+	</web-resource>
+	<web-resource key="track-progress-page">
+		<transformation extension="js">
+			<transformer key="jsI18n"/>
+		</transformation>
+		<dependency>jira.webresources:jira-global</dependency>
+		<dependency>com.pawelniewiadomski.devs.jira.jira-bulk-create-plugin:global</dependency>
+		<resource type="download" name="progress.js" location="javascript/progress.js"/>
+		<resource type="download" name="progress.css" location="css/progress.css"/>
+	</web-resource>
+	<web-item key="bulk-create-on-project-page" name="Bulk Create Issues" section="system.view.project.operations"
+			  i18n-name-key="jbcp.bulk.create">
+		<label key="jbcp.bulk.create"/>
+		<tooltip key="jbcp.bulk.create.tooltip"/>
+		<link linkId="bulk-create-on-project-page">/secure/BulkCreateIssues!default.jspa?pid=$helper.project.id</link>
+		<condition class="com.atlassian.jira.plugin.webfragment.conditions.HasSelectedProjectCondition"/>
+		<condition class="com.atlassian.jira.plugin.webfragment.conditions.HasProjectPermissionCondition">
+			<param name="permission">create</param>
+		</condition>
+		<condition class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
+			<param name="permission">bulkchange</param>
+		</condition>
+	</web-item>
+	<!--web-item key="bulk-create-on-navigation-bar"
+				  name="Bulk Create Issues"
+				  section="find_link/issues_new"
+				  i18n-name-key="jbcp.bulk.create">
+			<label key="jbcp.bulk.create"/>
+			<tooltip key="jbcp.bulk.create.tooltip"/>
+			<link linkId="bulk-create-on-navigation-bar">/secure/BulkCreateIssues!default.jspa</link>
+			<condition class="com.atlassian.jira.plugin.webfragment.conditions.UserHasVisibleProjectsCondition">
+				<param name="permission">create</param>
+			</condition>
+		</web-item-->
+	<webwork1 key="actions" name="Actions" class="java.lang.Object">
+		<actions>
+			<action name="com.pawelniewiadomski.devs.jira.webwork.BulkCreateIssues" alias="BulkCreateIssues">
+				<view name="input">/com/pawelniewiadomski/devs/jira/views/upload.vm</view>
+				<view name="denied">/secure/views/securitybreach.jsp</view>
+			</action>
+			<action name="com.pawelniewiadomski.devs.jira.webwork.MapFields" alias="MapFields">
+				<view name="input">/com/pawelniewiadomski/devs/jira/views/map-fields.vm</view>
+				<view name="denied">/secure/views/securitybreach.jsp</view>
+			</action>
+			<action name="com.pawelniewiadomski.devs.jira.webwork.MapValues" alias="MapValues">
+				<view name="input">/com/pawelniewiadomski/devs/jira/views/map-values.vm</view>
+				<view name="denied">/secure/views/securitybreach.jsp</view>
+			</action>
+			<action name="com.pawelniewiadomski.devs.jira.webwork.TrackProgress" alias="TrackProgress">
+				<view name="success">/com/pawelniewiadomski/devs/jira/views/progress.vm</view>
+				<view name="denied">/secure/views/securitybreach.jsp</view>
+			</action>
+		</actions>
+	</webwork1>
+	<resource type="i18n" name="i18n-licensing" location="atlassian-plugin"/>
+	<component-import key="pluginAccessor" interface="com.atlassian.plugin.PluginAccessor"/>
+	<component-import key="pluginController" interface="com.atlassian.plugin.PluginController"/>
+	<component-import key="txTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate"/>
+	<component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
+	<component-import key="templateRenderer" interface="com.atlassian.templaterenderer.TemplateRenderer"/>
+	<component-import key="pluginSettingsFactory"
+					  interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory"/>
+	<component-import key="loginUriProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider"/>
+	<component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager"/>
+	<component-import key="i18nResolver" interface="com.atlassian.sal.api.message.I18nResolver"/>
+	<component key="thirdPartyPluginLicenseStorageManager"
+			   class="com.atlassian.upm.license.storage.lib.ThirdPartyPluginLicenseStorageManagerImpl"/>
+	<component key="pluginLicenseStoragePluginInstaller"
+			   class="com.atlassian.upm.license.storage.lib.PluginLicenseStoragePluginInstaller"/>
+	<component key="atlassianMarketplaceUriFactory"
+			   class="com.atlassian.upm.license.storage.lib.AtlassianMarketplaceUriFactoryImpl"/>
+	<servlet name="License Servlet" i18n-name-key="license-servlet.name" key="license-servlet"
+			 class="com.pawelniewiadomski.devs.jira.servlet.LicenseServlet">
+		<description key="license-servlet.description">The License Servlet Plugin</description>
+		<url-pattern>/com.pawelniewiadomski.devs.jira.jira-bulk-create-plugin/license</url-pattern>
+	</servlet>
+</atlassian-plugin>

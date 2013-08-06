@@ -1,0 +1,7 @@
+#* @implicitly included *#
+#* @vtlvariable name="atl_token" type="java.lang.String" *#
+#* @vtlvariable name="i18n" type="com.atlassian.jira.util.I18nHelper" *#
+#* @vtlvariable name="webResourceManager" type="com.atlassian.plugin.webresource.WebResourceManager" *#
+#* @vtlvariable name="textutils" type="com.opensymphony.util.TextUtils" *#
+#* @vtlvariable name="velocityhelper" type="com.atlassian.jira.util.JiraVelocityHelper" *#
+#* @vtlvariable name="req" type="javax.servlet.http.HttpServletRequest" *#

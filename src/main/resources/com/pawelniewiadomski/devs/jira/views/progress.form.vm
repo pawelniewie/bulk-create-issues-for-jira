@@ -1,0 +1,27 @@
+#* @vtlvariable name="action" type="com.pawelniewiadomski.devs.jira.webwork.TrackProgress" *#
+<form class="aui" action="TrackProgress.jspa" method="POST">
+	<div class="form-body">
+		<input type="hidden" name="atl_token" value="$atl_token">
+		<input type="hidden" id="eid" name="eid" value="$action.eid">
+		<input type="hidden" id="finished" name="finished" value="false">
+
+		#if (!$action.jira5)
+			<h2>$i18n.getText('jbcp.TrackProgress.title', $action.selectedProjectObject.name)</h2>
+		#end
+
+		<div id="progress-wrapper">
+			<div id="import-progress"></div>
+		</div>
+		<div id="issues"></div>
+		<div style="clear: both;"></div>
+		<div id="messages"></div>
+	</div>
+	<div class="buttons-container form-footer">
+		<div class="buttons">
+			<a href="$req.contextPath/browse/$textutils.htmlEncode($velocityhelper.urlencode($action.selectedProjectObject.key))" class="cancel" accesskey="$i18n.getText('AUI.form.cancel.link.accesskey')"
+			   title="$i18n.getText('AUI.form.cancel.link.tooltip', $i18n.getText('AUI.form.cancel.link.accesskey'), $action.modifierKey)">$i18n.getText("AUI.form.cancel.link.text")</a>
+		</div>
+	</div>
+	<div id="reportBug2"></div>
+	<div id="reportBug">$i18n.getText('jbcp.get.help')</div>
+</form>

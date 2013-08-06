@@ -1,0 +1,12 @@
+#progress-wrapper div.progress-fill-color {
+	background-color: #ccc;
+}
+
+#progress-wrapper div.progress-bar {
+	height: 15em;
+}
+
+#issues span {
+	float: left;
+	margin-right: 5px;
+}

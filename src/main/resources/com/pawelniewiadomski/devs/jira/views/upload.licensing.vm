@@ -1,0 +1,21 @@
+ #* @vtlvariable name="action" type="com.pawelniewiadomski.devs.jira.webwork.BulkCreateIssues" *#
+ <form class="aui" action="BulkCreateIssues.jspa" method="POST" enctype="multipart/form-data">
+ 	<div class="form-body">
+ 		<input type="hidden" name="atl_token" value="$atl_token">
+
+ 		#if (!$action.jira5)
+ 			<h2>$i18n.getText('jbcp.BulkCreateIssues.title', $action.selectedProjectObject.name)</h2>
+ 		#end
+
+        <div class="aui-message warning"><span class="aui-icon icon-warning"></span>
+            #if ($action.isHasPermission("administer"))
+                $i18n.getText('jbcp.setup.license.admin', $action.licenseAdminUrl)
+            #else
+                $i18n.getText('jbcp.setup.license')
+            #end
+        </div>
+
+ 	</div>
+ 	<div id="reportBug2"></div>
+ 	<div id="reportBug">$i18n.getText('jbcp.get.help')</div>
+ </form>

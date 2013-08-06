@@ -1,0 +1,72 @@
+#* @vtlvariable name="action" type="com.pawelniewiadomski.devs.jira.webwork.MapValues" *#
+
+<form class="aui" action="${action.actionName}.jspa" method="POST">
+	<div class="form-body">
+		<input type="hidden" name="atl_token" value="$atl_token">
+
+		#if (!$action.jira5)
+			<h2>$i18n.getText('jbcp.MapValues.title', $action.selectedProjectObject.name)</h2>
+		#end
+
+		#if ($action.getHasErrorMessages())
+			#foreach ($error in $action.getFlushedErrorMessages())
+				#AUImessage("error" "" $textutils.htmlEncode(${error}) "" "" "" "false")
+			#end
+		#end
+
+		<div>$i18n.getText('jbcp.map.values')</div>
+
+		<div id="mappings-view"></div>
+
+#set ($fieldMappings = $action.fieldMappings)
+#set ($csvValues = $action.fieldValues)
+<table class="aui" style="width: auto !important; min-width: 450px;">
+	<thead>
+	<tr>
+		<th>$i18n.getText('jbcp.upload.mappings.csv.column')</th>
+		<th>$i18n.getText('jbcp.upload.mappings.csv.value')</th>
+		<th></th>
+		<th>$i18n.getText('jbcp.upload.mappings.jira.value')</th>
+	</tr>
+	</thead>
+	<tbody>
+#foreach($csvColumn in $csvValues.keySet())
+	#if ($action.jiraValues.containsKey($fieldMappings.get($csvColumn)))
+		#set ($values = $action.getCsvValues($csvColumn))
+		#foreach($csvValue in $values)
+			<tr>
+				#if ($velocityCount == 1)
+				<td rowspan="$values.size()">
+					$textutils.htmlEncode($csvColumn)
+					<div class="description">(&rarr; $action.allJiraFields.get($fieldMappings.get($csvColumn)))</div>
+				</td>
+				#end
+
+				<td>$textutils.htmlEncode($csvValue)</td>
+				<td>&rarr;</td>
+				<td>
+					<select name="$textutils.htmlEncode($action.getValueMappingId($csvColumn, $csvValue))">
+						#foreach($jira in $action.getJiraValuesForColumn($csvColumn).entrySet())
+							<option value="$textutils.htmlEncode($jira.value)" #if ($action.getValueMapping($csvColumn, $csvValue) && $jira.value == $action.getValueMapping($csvColumn, $csvValue)) selected #end>$textutils.htmlEncode($jira.value)</option>
+						#end
+					</select>
+				</td>
+			</tr>
+		#end
+	#end
+#end
+	</tbody>
+</table>
+
+	</div>
+	<div class="buttons-container form-footer">
+		<div class="buttons">
+			<input id="create" type="submit" class="button" value="$i18n.getText('common.words.create')" accesskey="$i18n.getText('AUI.form.submit.button.accesskey')"
+				   title="$i18n.getText('AUI.form.submit.button.tooltip', $i18n.getText('AUI.form.submit.button.accesskey'), $action.modifierKey)">
+			<a href="$req.contextPath/browse/$textutils.htmlEncode($velocityhelper.urlencode($action.selectedProjectObject.key))" class="cancel" accesskey="$i18n.getText('AUI.form.cancel.link.accesskey')"
+			   title="$i18n.getText('AUI.form.cancel.link.tooltip', $i18n.getText('AUI.form.cancel.link.accesskey'), $action.modifierKey)">$i18n.getText("AUI.form.cancel.link.text")</a>
+		</div>
+	</div>
+	<div id="reportBug2"></div>
+	<div id="reportBug">$i18n.getText('jbcp.get.help')</div>
+</form>

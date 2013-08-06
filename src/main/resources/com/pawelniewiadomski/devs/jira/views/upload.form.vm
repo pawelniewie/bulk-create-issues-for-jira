@@ -1,0 +1,55 @@
+#* @vtlvariable name="action" type="com.pawelniewiadomski.devs.jira.webwork.BulkCreateIssues" *#
+<form class="aui" action="BulkCreateIssues.jspa" method="POST" enctype="multipart/form-data">
+	<div class="form-body">
+		<input type="hidden" name="atl_token" value="$atl_token">
+
+		#if (!$action.jira5)
+			<h2>$i18n.getText('jbcp.BulkCreateIssues.title', $action.selectedProjectObject.name)</h2>
+		#end
+
+		#if ($action.getHasErrorMessages())
+			#foreach ($error in $action.getFlushedErrorMessages())
+				#AUImessage("error" "" $textutils.htmlEncode(${error}) "" "" "" "false")
+			#end
+		#end
+
+		<div class="field-group">
+			<label for="file">
+				<span class="aui-icon icon-required"></span><span class="content"> $action.getText("common.forms.requiredfields")</span>
+				$i18n.getText('jbcp.upload.file.label')
+			</label>
+			<span id="attach-max-size" class="hidden">$action.maxSize</span>
+			<input id="file" type="file" name="file" class="ignore-inline-attach">
+			#if ($action.getErrors().get('file'))
+				<div class="error">$textutils.htmlEncode($action.getErrors().get('file'))</div>
+			#end
+            <div class="description">$i18n.getText('jbcp.separate.columns')</div>
+		</div>
+
+		<div class="field-group">
+			<label for="encoding">
+				<span class="aui-icon icon-required"></span><span class="content"> $action.getText("common.forms.requiredfields")</span>
+				$i18n.getText('jbcp.upload.encoding.label')
+			</label>
+			<input id="encoding" type="text" name="encoding" value="$action.encoding">
+			#if ($action.getErrors().get('file'))
+				<div class="error">$textutils.htmlEncode($action.getErrors().get('encoding'))</div>
+			#end
+		</div>
+
+		<div class="field-group">
+			$i18n.getText('jbcp.upload.mappings.import.multiple')
+		</div>
+
+	</div>
+	<div class="buttons-container form-footer">
+		<div class="buttons">
+			<input id="next" type="submit" class="button" value="$i18n.getText('jbcp.common.words.next')" accesskey="$i18n.getText('AUI.form.submit.button.accesskey')"
+				   title="$i18n.getText('AUI.form.submit.button.tooltip', $i18n.getText('AUI.form.submit.button.accesskey'), $action.modifierKey)">
+			<a href="$req.contextPath/browse/$textutils.htmlEncode($velocityhelper.urlencode($action.selectedProjectObject.key))" class="cancel" accesskey="$i18n.getText('AUI.form.cancel.link.accesskey')"
+			   title="$i18n.getText('AUI.form.cancel.link.tooltip', $i18n.getText('AUI.form.cancel.link.accesskey'), $action.modifierKey)">$i18n.getText("AUI.form.cancel.link.text")</a>
+		</div>
+	</div>
+	<div id="reportBug2"></div>
+	<div id="reportBug">$i18n.getText('jbcp.get.help')</div>
+</form>

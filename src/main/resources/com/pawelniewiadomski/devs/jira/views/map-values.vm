@@ -1,0 +1,43 @@
+#* @vtlvariable name="action" type="com.pawelniewiadomski.devs.jira.webwork.MapFields" *#
+<html>
+<head>
+	<title>$i18n.getText('jbcp.MapValues.title', $action.selectedProjectObject.name)</title>
+	<content tag="section">browse_link</content>
+	$webResourceManager.requireResource("com.pawelniewiadomski.devs.jira.jira-bulk-create-plugin:global")
+</head>
+<body #if (!$action.jira5) class="nl" #end>
+	#if ($action.jira5)
+	<header>
+		<h1>$i18n.getText('jbcp.MapValues.title', $action.selectedProjectObject.name)</h1>
+	</header>
+	#end
+
+	#if (!$action.jira5)
+		<div id="main-content">
+			<div class="active-area">
+				<div id="primary">
+					<div class="content">
+	#else
+		<div class="content-container">
+		#if(!$action.inlineDialogMode)
+			<div class="content-body aui-panel">
+		#end
+				<div class="form-wrapper">
+	#end
+			
+	#parse('/com/pawelniewiadomski/devs/jira/views/map-values.form.vm')
+
+	#if ($action.jira5)
+				</div>
+		#if(!$action.inlineDialogMode)
+			</div>
+		#end
+	</div>
+	#else
+					</div>
+				</div>
+			</div>
+		</div>
+	#end
+</body>
+</html>

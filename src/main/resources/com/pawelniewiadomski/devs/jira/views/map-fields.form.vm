@@ -1,0 +1,61 @@
+#* @vtlvariable name="action" type="com.pawelniewiadomski.devs.jira.webwork.MapFields" *#
+
+<form class="aui" action="MapFields.jspa" method="POST">
+	<div class="form-body">
+		<input type="hidden" name="atl_token" value="$atl_token">
+
+		#if (!$action.jira5)
+			<h2>$i18n.getText('jbcp.TrackProgress.title', $action.selectedProjectObject.name)</h2>
+		#end
+
+		#if ($action.getHasErrorMessages())
+			#foreach ($error in $action.getFlushedErrorMessages())
+				#AUImessage("error" "" $textutils.htmlEncode(${error}) "" "" "" "false")
+			#end
+		#end
+
+		<div>$i18n.getText('jbcp.upload.mappings.csv.file')</div>
+
+		<div id="mappings-view"></div>
+
+		<table class="aui" style="width: auto !important;">
+			<thead>
+			<tr>
+				<th>$i18n.getText('jbcp.upload.mappings.csv.column')</th>
+				<th></th>
+				<th>$i18n.getText('jbcp.upload.mappings.jira.field')</th>
+			</tr>
+			</thead>
+			<tbody>
+				#foreach($col in $action.columnNames)
+					<tr>
+						<td>$textutils.htmlEncode($col)</td>
+						<td>&rarr;</td>
+						<td>
+							<select name="$textutils.htmlEncode($col)">
+								<option></option>
+								#foreach($jiraFields in $action.getAvailableJiraFields($col).entrySet())
+									<optgroup label="$textutils.htmlEncode($jiraFields.key)">
+										#foreach($jira in $jiraFields.value.entrySet())
+											<option value="$jira.key" #if ($action.getColumnMapping($col) && $jira.key == $action.getColumnMapping($col)) selected #end>$jira.value</option>
+										#end
+									</optgroup>
+								#end
+							</select>
+						</td>
+					</tr>
+				#end
+			</tbody>
+		</table>
+	</div>
+	<div class="buttons-container form-footer">
+		<div class="buttons">
+			<input id="create" type="submit" class="button" value="$i18n.getText('common.words.create')" accesskey="$i18n.getText('AUI.form.submit.button.accesskey')"
+				   title="$i18n.getText('AUI.form.submit.button.tooltip', $i18n.getText('AUI.form.submit.button.accesskey'), $action.modifierKey)">
+			<a href="$req.contextPath/browse/$textutils.htmlEncode($velocityhelper.urlencode($action.selectedProjectObject.key))" class="cancel" accesskey="$i18n.getText('AUI.form.cancel.link.accesskey')"
+			   title="$i18n.getText('AUI.form.cancel.link.tooltip', $i18n.getText('AUI.form.cancel.link.accesskey'), $action.modifierKey)">$i18n.getText("AUI.form.cancel.link.text")</a>
+		</div>
+	</div>
+	<div id="reportBug2"></div>
+	<div id="reportBug">$i18n.getText('jbcp.get.help')</div>
+</form>
