@@ -6,6 +6,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mindprod.csv.CSVReader;
 import org.apache.commons.lang.StringUtils;
+import org.supercsv.io.CsvListReader;
+import org.supercsv.io.ICsvListReader;
+import org.supercsv.prefs.CsvPreference;
 
 import javax.annotation.Nonnull;
 import java.io.EOFException;
@@ -28,21 +31,21 @@ public class CsvReader {
 	}
 
     @Nonnull
-    protected CSVReader createReader(char separator) throws IOException {
-        return new CSVReader(new InputStreamReader(new JiraFileInputStream(file), encoding),
-                separator, '\"', "#", true, true, true, true);
+    protected ICsvListReader createReader(char separator) throws IOException {
+        return new CsvListReader(new InputStreamReader(new JiraFileInputStream(file), encoding),
+                CsvPreference.STANDARD_PREFERENCE);
     }
 
     protected int numberOfColumns(char separator) {
         try {
-            final CSVReader reader = createReader(separator);
-            final String[] header = reader.getAllFieldsInLine();
+            final ICsvListReader reader = createReader(separator);
+            final String[] header = reader.getHeader(true);
             if (header == null) {
                 return -1;
             }
             try {
                 for(int i=0, s=50; i < s; ++i) {
-                    if(reader.getAllFieldsInLine() == null) {
+                    if(reader.read() == null) {
                         break;
                     }
                 }
@@ -70,14 +73,14 @@ public class CsvReader {
     }
 
 	public CsvData getAllData() throws IOException {
-        final CSVReader reader = createReader(guessSeparator());
+        final ICsvListReader reader = createReader(guessSeparator());
 		final List<LinkedListMultimap<String, String>> data = Lists.newArrayList();
 		final LinkedHashMap<String, Boolean> columns = Maps.newLinkedHashMap();
 		try {
 			try {
 				final List<String> header = Lists.newArrayList();
-				String [] line;
-				while ((line = reader.getAllFieldsInLine()) != null) {
+				List<String> line;
+				while ((line = reader.read()) != null) {
 					if (header.isEmpty()) {
 						for(String col : line) {
 	                        header.add(col);
@@ -85,9 +88,9 @@ public class CsvReader {
 						}
 					} else {
 						LinkedListMultimap<String, String> row = LinkedListMultimap.create(header.size());
-						for(int i = 0, s = Math.min(header.size(), line.length); i < s; ++i) {
-							if (StringUtils.isNotBlank(line[i])) {
-								row.put(header.get(i), line[i]);
+						for(int i = 0, s = Math.min(header.size(), line.size()); i < s; ++i) {
+							if (StringUtils.isNotBlank(line.get(i))) {
+								row.put(header.get(i), line.get(i));
 							}
 						}
 
